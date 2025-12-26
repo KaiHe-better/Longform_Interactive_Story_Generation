@@ -1,0 +1,120 @@
+data:
+  # train_files: /hpc/home/kai_he/workshop/Story_RL/story_generation/train.parquet
+  # val_files: /hpc/home/kai_he/workshop/Story_RL/story_generation/test.parquet
+  train_files: /data/kai_he/dataset/story_generation_rl_above_value20/train-00000-of-00001.parquet
+  val_files: /data/kai_he/dataset/story_generation_rl_above_value20/test-00000-of-00001.parquet
+  prompt_key: prompt
+  answer_key: target_response
+  image_key: images
+  video_key: videos
+  image_dir: null
+  video_fps: 2.0
+  max_prompt_length: 7000
+  max_response_length: 2048
+  rollout_batch_size: 256  # equivalent to verl's data.train_batch_size
+  mini_rollout_batch_size: null  # equivalent to verl's data.gen_batch_size
+  val_batch_size: 256
+  format_prompt: ./examples/format_prompt/story_generation.jinja
+  # 这东西一定不能设置成 true 了，不然完了
+  override_chat_template: null
+  shuffle: true
+  seed: 1
+  min_pixels: 262144
+  max_pixels: 4194304
+  filter_overlong_prompts: true
+  cut_dataset: true
+  max_train_samples: -1
+  max_val_samples: 256
+
+algorithm:
+  adv_estimator: grpo
+  disable_kl: false
+  use_kl_loss: true
+  kl_penalty: low_var_kl
+  kl_coef: 5.0e-2
+  online_filtering: false  # dapo filter groups
+  filter_key: overall
+  filter_low: 0.01
+  filter_high: 0.99
+
+worker:
+  actor:
+    is_story: true
+    use_dp_loss: false
+    global_batch_size: 128  # equivalent to verl's actor.ppo_mini_batch_size
+    micro_batch_size_per_device_for_update: 1  # equivalent to verl's actor.ppo_micro_batch_size_per_gpu
+    micro_batch_size_per_device_for_experience: 2  # equivalent to verl's rollout.log_prob_micro_batch_size_per_gpu
+    max_grad_norm: 1.0
+    padding_free: true
+    dynamic_batching: true
+    ulysses_size: 1
+    model:
+      torch_dtype: bfloat16
+      enable_gradient_checkpointing: true
+      trust_remote_code: true
+      freeze_vision_tower: false
+    optim:
+      lr: 1.0e-6
+      weight_decay: 1.0e-2
+      strategy: adamw_bf16  # {adamw, adamw_bf16}
+      lr_warmup_ratio: 0.1
+    fsdp:
+      torch_dtype: bfloat16
+      enable_full_shard: true
+      enable_cpu_offload: false
+      enable_rank0_init: true
+    offload:
+      offload_params: false  # true: more CPU memory; false: more GPU memory
+      offload_optimizer: true  # true: more CPU memory; false: more GPU memory
+
+  rollout:
+    n: 5
+    temperature: 0.9
+    top_p: 0.9
+    limit_images: 0
+    gpu_memory_utilization: 0.6
+    enforce_eager: false
+    enable_chunked_prefill: false
+    tensor_parallel_size: 2
+    disable_tqdm: false
+    val_override_config:
+      temperature: 0.6
+      top_p: 0.95
+      n: 1
+
+  ref:
+    # ref 不需要这个，is_story 会额外计算熵，这里不需要
+    is_story: false
+    fsdp:
+      enable_full_shard: true
+      enable_cpu_offload: true  # true: more CPU memory; false: more GPU memory
+      enable_rank0_init: true
+    offload:
+      offload_params: false
+
+  reward:
+    reward_type: batch
+    # reward_function: ./examples/reward_function/story_generation_mask_entropy_with_pred.py:compute_score
+    reward_function: ./examples/reward_function/story_generation_len_new.py:compute_score
+
+trainer:
+  total_epochs: 1 # 15
+  max_steps: null
+  project_name: Story_RL_on_above20
+  # experiment_name: qwen3_8b_sft_only_dp_loss
+  experiment_name: llama_8b_origin_len
+  logger: ["tensorboard", "file"]
+  nnodes: 1
+  n_gpus_per_node: 2
+  max_try_make_batch: 20  # -1 means no limit
+  val_freq: -1  # -1 to disable
+  val_before_train: false
+  val_only: false
+  val_generations_to_log: 3
+  save_freq: 20  # -1 to disable, 5
+  save_limit: 8  # -1 to disable, 3
+  save_model_only: false
+  # save_checkpoint_path: /data/kai_he/Story_RL_sft_only_dp_loss
+  save_checkpoint_path: /data/kai_he/above20/Story_RL_origin_len_llama
+  load_checkpoint_path: null
+  find_last_checkpoint: true
