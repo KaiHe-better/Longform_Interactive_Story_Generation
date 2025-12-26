@@ -249,7 +249,7 @@ ai-story-data-generation/
 ```
 ## Reinforcement Learning Module (`RL/`)
 
-The **`RL/`** directory contains the implementation of **Controllable Reinforcement Learning (Controllable RL)** for story generation and refinement.  
+The **`EasyR1-v2/`** directory contains the implementation of **Controllable Reinforcement Learning (Controllable RL)** for story generation and refinement.  
 This module focuses on optimizing long-horizon narrative structure and controllable story attributes by introducing reinforcement learning signals aligned with explicit control objectives.
 
 
