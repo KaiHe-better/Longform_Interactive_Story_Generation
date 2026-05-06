@@ -29,7 +29,7 @@ This project is a complete AI-driven story generation pipeline that can:
 
 ### Core Functional Modules
 
-#### 0. Training Controllable LLM: Diversity-aware Controllable Reinforcement Learnin
+#### 0. Training Controllable LLM: Diversity-aware Controllable Reinforcement Learning
 -  Training code directory (zip for EasyR1)
 
 #### 1. Story Generation Module
