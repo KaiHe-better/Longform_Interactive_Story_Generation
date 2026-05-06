@@ -29,6 +29,9 @@ This project is a complete AI-driven story generation pipeline that can:
 
 ### Core Functional Modules
 
+#### 0. Training Controllable LLM: Diversity-aware Controllable Reinforcement Learnin
+-  Training code directory (zip for EasyR1)
+
 #### 1. Story Generation Module
 - **`generate.py`** – Main story content generator  
   - Generates story plots and dialogues based on LLMs  
