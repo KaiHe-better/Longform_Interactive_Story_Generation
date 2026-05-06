@@ -2,6 +2,14 @@
 
 An intelligent story data generation system based on large language models (LLMs), supporting multilingual (Chinese/English) story creation, plot generation, quality evaluation, and user interaction simulation.
 
+
+## Project Dataset
+
+Please see related datasets at :
+
+https://huggingface.co/datasets/HeAAAAA/story_generation_rl
+
+ 
 ## Project Overview
 
 This project is a complete AI-driven story generation pipeline that can:
