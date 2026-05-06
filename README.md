@@ -279,11 +279,8 @@ This module focuses on optimizing long-horizon narrative structure and controlla
 
 ## License
 
-[To be added]
+Released artifacts are licensed under CC BY 4.0 for research use with attribution. EpisodeBench is intended for research on structured narrative progression, episode-transition control, pacing analysis, evaluator calibration, and controllable long-form generation. It is not intended for reconstructing original copyrighted stories, evaluating general literary merit, or deploying unrestricted interactive storytelling systems. Commercial use and redistribution of generated content for interactive deployment require additional review.
 
-## Contact
-
-[To be added]
 
 ---
 
